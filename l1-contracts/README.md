@@ -1,13 +1,3 @@
-# Sample Hardhat Project
-
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a Hardhat Ignition module that deploys that contract.
-
-Try running some of the following tasks:
-
-```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat ignition deploy ./ignition/modules/Lock.js
-```
+## Layer 1 Contracts
+* contracts/PortalERC20.sol is a simple ERC20 contract that can mint tokens to anyone
+* contracts/TokenPortal.sol is the L1 portal contract which communicates with the L2 Aztec contract(Token Bridge contract).
