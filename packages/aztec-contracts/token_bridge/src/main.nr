@@ -17,7 +17,7 @@ contract TokenBridge {
         portal_address: SharedImmutable<EthAddress>,
     }
 
-    // Constructs the contract.
+    // Initializer function, this runs first to initialize variables in the storage
     #[aztec(public)]
     #[aztec(initializer)]
     fn constructor(token: AztecAddress, portal_address: EthAddress) {
@@ -28,9 +28,9 @@ contract TokenBridge {
     // Consumes a L1->L2 message and calls the token contract to mint the appropriate amount publicly
     #[aztec(public)]
     fn claim_public(to: AztecAddress, amount: Field, secret: Field, message_leaf_index: Field) {
-        //recomputes the L1->L2 message. Does the same thing as the Tokenportal.sol's deposit function for the content_hash
-        //important: to and amount is included here. If attackers input their own address, the content hash will be different 
-        //to what the token portal had calculated on L1.
+        // Recomputes the L1->L2 message. Similar with TokenPortal.sol's deposit function for the content_hash
+        // Important: to and amount is included here. If attackers input their own address, the content hash will be different 
+        // to what the token portal had calculated on L1.
         let content_hash = get_mint_public_content_hash(to, amount);
 
         // Consume message and emit nullifier
@@ -77,7 +77,7 @@ contract TokenBridge {
         Token::at(storage.token.read()).mint_private(amount, secret_hash).call(&mut context);
     }
 
-    //Withdrawing from L1
+    // Withdrawing from L1
     // Burns the appropriate amount of tokens and creates a L2 to L1 withdraw message publicly
     // Requires `msg.sender` to give approval to the bridge to burn tokens on their behalf using witness signatures
     #[aztec(public)]
@@ -89,12 +89,12 @@ contract TokenBridge {
     ) {
         // Send an L2 to L1 message
         let content = get_withdraw_content_hash(recipient, amount, caller_on_l1);
-        //*passes this content to the kernel circuit which creates the proof for the transaction
-        //*takes the recipient and content as input, and will insert a message into the outbox. We set the recipient to be the portal address read from storage of the contract.
+        // *Passes this content to the kernel circuit which creates the proof for the transaction
+        // *Takes the recipient and content as input, and will insert a message into the outbox. We set the recipient to be the portal address read from storage of the contract.
         context.message_portal(storage.portal_address.read_public(), content);
 
         // Burn tokens on L2: We burn the tokens from the msg_sender(). Otherwise, a malicious user could burn someone else’s tokens and mint tokens on L1 to themselves. 
-        //One could add another approval flow on the bridge but that might make it complex for other applications to call the bridge.
+        // One could add another approval flow on the bridge but that might make it complex for other applications to call the bridge.
         Token::at(storage.token.read()).burn_public(context.msg_sender(), amount, nonce).call(&mut context);
     }
 

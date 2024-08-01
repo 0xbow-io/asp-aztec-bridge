@@ -14,12 +14,7 @@ contract TokenPortal {
 
     using SafeERC20 for IERC20;
 
-    //rollup registry address. Used various versions of a message (i.e. aztec upgrades). 
-    //Messages must not be replayable in other aztec domain. 
-    //This is why you must include the version when creaing a message.
-    //registry also contains the versions of the inbox, outbox and rollup addresses so the portal can find out
-    //the address of the mailbox it wants to talk to
-    IRegistry public registry; 
+    IRegistry public registry; //rollup registry address (that stores the current rollup, inbox and outbox contract addresses)
     IERC20 public underlying; //ERC20 token the portal corresponds to
     bytes32 public l2Bridge; //address of the sister contract on Aztec to where the token will send messages to (deposit or withdraw)
 
@@ -91,7 +86,6 @@ contract TokenPortal {
 
     /**
     Withdrawing on L1: After the transaction is completed on L2, the portal must call the outbox to successfully transfer funds to the user on L1. 
-    Like with deposits, things can be complex here. For example, what happens if the transaction was done on L2 to burn tokens but can’t be withdrawn to L1?
     * @notice Withdraw funds from the portal
     * @dev Second part of withdraw, must be initiated from L2 first as it will consume a message from outbox
     * @param _recipient - The address to send the funds to
@@ -103,7 +97,7 @@ contract TokenPortal {
     * Must match the caller of the message (specified from L2) to consume it.
     */
     function withdraw(address _recipient, uint256 _amount, bool _withCaller, uint256 _l2BlockNumber, uint256 _leafIndex, bytes32[] calldata _path) external {
-        //construct the message
+        // Reconstruct the L2 to L1 message and check that this message exists on the outbox
         DataStructures.L2ToL1Msg memory message = DataStructures.L2ToL1Msg({
             sender: DataStructures.L2Actor(l2Bridge, 1),
             recipient: DataStructures.L1Actor(address(this), block.chainid),
@@ -112,11 +106,12 @@ contract TokenPortal {
                 "withdraw(address,uint256,address)",
                 _recipient,
                 _amount,
-                _withCaller ? msg.sender : address(0) //determines the appropriate party that can execute this function on behalf of the recipient.
+                //determines the appropriate party that can execute this function on behalf of the recipient.
+                _withCaller ? msg.sender : address(0) 
             )
             )
         });
-
+        // If exists we consume it and transfer the funds to the recipient
         IOutbox outbox = registry.getOutbox();
 
         outbox.consume(message, _l2BlockNumber, _leafIndex, _path);
