@@ -6,12 +6,12 @@
   "type": "module",
   "private": true,
   "dependencies": {
-    "@aztec/accounts": "^0.47.1",
-    "@aztec/aztec.js": "^0.47.1",
-    "@aztec/foundation": "^0.47.1",
-    "@aztec/l1-artifacts": "^0.47.1",
-    "@aztec/noir-contracts.js": "^0.47.1",
-    "@aztec/types": "^0.47.1",
+    "@aztec/accounts": "0.47.1",
+    "@aztec/aztec.js": "0.47.1",
+    "@aztec/foundation": "0.47.1",
+    "@aztec/l1-artifacts": "0.47.1",
+    "@aztec/noir-contracts.js": "0.47.1",
+    "@aztec/types": "0.47.1",
     "@types/node": "^20.8.2",
     "typescript": "^5.5.4",
     "viem": "^2.7.15"

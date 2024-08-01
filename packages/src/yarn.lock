@@ -15,7 +15,7 @@
     "@jridgewell/gen-mapping" "^0.3.5"
     "@jridgewell/trace-mapping" "^0.3.24"
 
-"@aztec/accounts@^0.47.1":
+"@aztec/accounts@0.47.1":
   version "0.47.1"
   resolved "https://registry.yarnpkg.com/@aztec/accounts/-/accounts-0.47.1.tgz#e7ef86a788e6502087b8799f90f9c2e73d198fb9"
   integrity sha512-pTDWG6AOPoM+Ir8PbszI9xQIAt9QQHYznXWxbV21M1OENARb+HIQcHheEcOAk8pxW3zIGnFyH/PhHGHfPn1U+Q==
@@ -29,7 +29,7 @@
     "@aztec/types" "0.47.1"
     tslib "^2.4.0"
 
-"@aztec/aztec.js@0.47.1", "@aztec/aztec.js@^0.47.1":
+"@aztec/aztec.js@0.47.1":
   version "0.47.1"
   resolved "https://registry.yarnpkg.com/@aztec/aztec.js/-/aztec.js-0.47.1.tgz#7ce6cebcf0ded7c391061f275c8e79c75bbd793d"
   integrity sha512-L6SJv1YZI+8sYaD3TjXcdlUHBUBAJULHT8on48QU0II8awhn9Xlr2979u4e8rqkSinVd8D8fYWweKDXmZnC6rg==
@@ -101,7 +101,7 @@
     tslib "^2.4.0"
     viem "^2.7.15"
 
-"@aztec/foundation@0.47.1", "@aztec/foundation@^0.47.1":
+"@aztec/foundation@0.47.1":
   version "0.47.1"
   resolved "https://registry.yarnpkg.com/@aztec/foundation/-/foundation-0.47.1.tgz#17b27f24a9124c8bc726da153815d2cb62a2e7dc"
   integrity sha512-rZmoe/dg4/kDsUszi/U2V3VUZhNRNMilSOHCByMXIfPVfOdFum7joHOnRtsuGpVbTSice7O87vQOJ5B9W3qweA==
@@ -127,14 +127,14 @@
     sha3 "^2.1.4"
     zod "^3.22.4"
 
-"@aztec/l1-artifacts@^0.47.1":
+"@aztec/l1-artifacts@0.47.1":
   version "0.47.1"
   resolved "https://registry.yarnpkg.com/@aztec/l1-artifacts/-/l1-artifacts-0.47.1.tgz#e136b08fe20543d77f3501a2040c1a1e48877fe7"
   integrity sha512-IUfxYA2j30sQyUd4vhonTjoNZuKwUaRb82Y2K6mIUoyz1qAcahMWCKQO6B1P9MU8P0yxSEg8uuRw6IBqf7V16A==
   dependencies:
     tslib "^2.4.0"
 
-"@aztec/noir-contracts.js@^0.47.1":
+"@aztec/noir-contracts.js@0.47.1":
   version "0.47.1"
   resolved "https://registry.yarnpkg.com/@aztec/noir-contracts.js/-/noir-contracts.js-0.47.1.tgz#aac85b30b76e78d4740a0b502da0869368035b57"
   integrity sha512-+6b7dQJ48C9ORx+CXGKHgS0KYNXcJimairvt7OmuYs5VZsWgYis7Vpvgf46BZJYGZ3dWsx7MXjwAn7tWB24U8g==
@@ -153,7 +153,7 @@
     lodash.omit "^4.5.0"
     tslib "^2.4.0"
 
-"@aztec/types@0.47.1", "@aztec/types@^0.47.1":
+"@aztec/types@0.47.1":
   version "0.47.1"
   resolved "https://registry.yarnpkg.com/@aztec/types/-/types-0.47.1.tgz#ec41e1b17271b698a49aa46cad6112710cf31bd8"
   integrity sha512-ssW/NgyyahbGsfx6WpeUuiy2KsnxWHaB7KzjyvcJ+Q0p8ay/goRNxQfC7at1n65qjMUmaCk0Dj3uXFGRDAOvkA==
@@ -1221,9 +1221,9 @@ camelcase@^6.2.0:
   integrity sha512-Gmy6FhYlCY7uOElZUSbxo2UCDH8owEk996gkbrpsgGtrJLM3J7jGxl9Ic7Qwwj4ivOE5AWZWRMecDdF7hqGjFA==
 
 caniuse-lite@^1.0.30001640:
-  version "1.0.30001645"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001645.tgz#4c4b7427683dea1170a152cd1654be8d0da7bd71"
-  integrity sha512-GFtY2+qt91kzyMk6j48dJcwJVq5uTkk71XxE3RtScx7XWRLsO7bU44LOFkOZYR8w9YMS0UhPSYpN/6rAMImmLw==
+  version "1.0.30001646"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001646.tgz#d472f2882259ba032dd73ee069ff01bfd059b25d"
+  integrity sha512-dRg00gudiBDDTmUhClSdv3hqRfpbOnU28IpI1T6PBTLWa+kOj0681C8uML3PifYfREuBrVjDGhL3adYpBT6spw==
 
 catering@^2.0.0, catering@^2.1.0:
   version "2.1.1"
@@ -3515,9 +3515,9 @@ toidentifier@1.0.1:
   integrity sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YhEz608PlAHRA==
 
 ts-jest@^29.2.3:
-  version "29.2.3"
-  resolved "https://registry.yarnpkg.com/ts-jest/-/ts-jest-29.2.3.tgz#3d226ac36b8b820151a38f164414f9f6b412131f"
-  integrity sha512-yCcfVdiBFngVz9/keHin9EnsrQtQtEu3nRykNy9RVp+FiPFFbPJ3Sg6Qg4+TkmH0vMP5qsTKgXSsk80HRwvdgQ==
+  version "29.2.4"
+  resolved "https://registry.yarnpkg.com/ts-jest/-/ts-jest-29.2.4.tgz#38ccf487407d7a63054a72689f6f99b075e296e5"
+  integrity sha512-3d6tgDyhCI29HlpwIq87sNuI+3Q6GLTTCeYRHCs7vDz+/3GCMwEtV9jezLyl4ZtnBgx00I7hm8PCP8cTksMGrw==
   dependencies:
     bs-logger "0.x"
     ejs "^3.1.10"
