@@ -30,7 +30,7 @@ A portal in the Aztec ecosystem is a crucial interface that facilitates communic
 
 Ensure you have the following installed:
 
-- [ ] [Node v18+](https://github.com/tj/n)
+- [ ] [Node v20 (install this version via 'nvm')](https://github.com/tj/n)
 - [ ] [Docker](https://docs.docker.com/)
 - [ ] Aztec Sandbox
 
@@ -48,7 +48,7 @@ aztec-up
 
 ### 1.2. Update
 
-Use 0.47.0 build for `aztec-up`:
+Update the sandbox to the latest version (0.47.1 is the latest) via  `aztec-up`:
 
 ```bash
 aztec-up
@@ -57,7 +57,7 @@ aztec-up
 or
 
 ```bash
-VERSION=0.47.0 aztec-up
+VERSION=0.47.1 aztec-up
 ```
 
 ### 1.3. Dependencies
@@ -93,13 +93,16 @@ npx hardhat compile
 
 ### 1.5. Run
 
-Run the sandbox
+Run the sandbox if you havent already
 
 ```bash
 aztec start --sandbox
 ```
 
 Run the tests
+
+> [!NOTE]
+> When the tests are being run, there should be logs being produced on the Sandbox. If no logs are being produced, restart docker.
 
 ```bash
 cd packages/src
