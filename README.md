@@ -43,7 +43,7 @@ bash -i <(curl -s install.aztec.network)
 ```
 To start the sandbox, run:
 ```bash
-aztec-up
+aztec start --sandbox
 ```
 
 ### 1.2. Update
