@@ -90,7 +90,7 @@ contract TokenBridge {
         // Send an L2 to L1 message
         let content = get_withdraw_content_hash(recipient, amount, caller_on_l1);
         // *Passes this content to the kernel circuit which creates the proof for the transaction
-        // *Takes the recipient and content as input, and will insert a message into the outbox. We set the recipient to be the portal address read from storage of the contract.
+        // *Takes the recipient and content as input, and will insert a message into the outbox of L1. We set the recipient to be the portal address read from storage of the contract.
         context.message_portal(storage.portal_address.read_public(), content);
 
         // Burn tokens on L2: We burn the tokens from the msg_sender(). Otherwise, a malicious user could burn someone else’s tokens and mint tokens on L1 to themselves. 
