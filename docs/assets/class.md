@@ -1,6 +1,10 @@
 # Class Diagram
 
 ## L1 Contracts
+Class diagram for the L1 contracts. The contracts are:
+* TokenPortal
+* PortalERC20
+
 ```mermaid
 classDiagram
 class TokenPortal{
@@ -110,10 +114,10 @@ class DataStructures {
 class Hash {
     <<library>>
     %%all functions below are internal
-    ~sha256ToField(_message: DataStructures.L1ToL2Msg): bytes32
-    ~sha256ToField(_message: DataStructures.L2ToL1Msg): bytes32
-    ~sha256ToField(_data: bytes): bytes32
-    ~sha256ToField(_data: bytes32): bytes32
+    ~sha256ToField(_message: DataStructures.L1ToL2Msg)bytes32
+    ~sha256ToField(_message: DataStructures.L2ToL1Msg)bytes32
+    ~sha256ToField(_data: bytes)bytes32
+    ~sha256ToField(_data: bytes32)bytes32
 }
 class ERC20 {
     <<abstract>>
@@ -136,11 +140,12 @@ class ERC20 {
     +totalSupply(): uint256
     +balanceOf(account: address): uint256
     +transfer(to: address, value: uint256): bool
-    +allowance(owner: address, spender: address): uint256
-    +approve(spender: address, value: uint256): bool
-    +transferFrom(from: address, to: address, value: uint256): bool
+    +allowance(owner: address, spender: address)uint256
+    +approve(spender: address, value: uint256)bool
+    +transferFrom(from: address, to: address, value: uint256)bool
 }
 class PortalERC20 {
+    <<contract>>
     +mint(to: address, amount: uint256) %%external
     +constructor()
 }
@@ -152,11 +157,11 @@ TokenPortal --|> IERC20: uses
 TokenPortal ..> SafeERC20: uses
 TokenPortal ..> Hash: uses
 %%IRegistry Interactions
-IRegistry ..> IRollup
-IRegistry ..> IInbox
-IRegistry ..> IOutbox
+IRegistry ..> IRollup: stores address for
+IRegistry ..> IInbox: stores address for
+IRegistry ..> IOutbox: stores address for
 IRegistry ..> RegistrySnapshot
-IRegistry ..> DataStructures
+IRegistry ..> DataStructures: uses
 %%IIInbox Interactions
 IInbox ..> DataStructures
 IInbox ..> L2Actor
@@ -191,12 +196,17 @@ ERC20 ..> IERC20
 ```
 
 ## L2 Contract
+Class diagram for the L2 contract. The contract is:
+* TokenBridge
+
 ```mermaid
 classDiagram
 class TokenBridge {
     <<contract>>
     +token: PublicMutable<AztecAddress>
-    +portal_address: portal_address: SharedImmutable<EthAddress>
+    +portal_address: SharedImmutable<EthAddress>
+    +constructor(token: AztecAddress, portal_address: EthAddress)
+    +get_withdraw_content_hash() -> Field
     +claim_public(to: AztecAddress, amount: Field, secret: Field, message_leaf_index: Field)
     +exit_to_l1_public(recipient: EthAddress, amount: Field, caller_on_l1: EthAddress, nonce: Field)
     +get_token() -> AztecAddress
@@ -206,35 +216,35 @@ class TokenBridge {
     ~_assert_token_is_same(token: AztecAddress)
 }
 class prelude {
-    <<library>>
-    FunctionSelector
-    AztecAddress
-    EthAddress
-    PublicMutable
-    SharedImmutable
+    <<module>>
+    +FunctionSelector
+    +AztecAddress
+    +EthAddress
+    +PublicMutable
+    +SharedImmutable
 }
 class token_portal_content_hash_lib {
-    <<library>>
-    get_mint_public_content_hash()
-    get_mint_private_content_hash()
-    get_withdraw_content_hash()
+    <<module>>
+    +get_mint_public_content_hash()
+    +get_mint_private_content_hash()
+    +get_withdraw_content_hash()
 }
 class Token {
     <<interface>>
-    mint_private(amount: Field, secret_hash: Field)
-    mint_public(amount: Field, secret: Field)
-    burn(from: AztecAddress, amount: Field, nonce: Field)
-    burn_public(from: AztecAddress, amount: Field, nonce: Field)
+    -mint_private(amount: Field, secret_hash: Field)
+    -burn(from: AztecAddress, amount: Field, nonce: Field)
+    +burn_public(from: AztecAddress, amount: Field, nonce: Field)
+    +mint_public(amount: Field, secret: Field)
 }
 class Storage {
     <<struct>>
-    token: PublicMutable<AztecAddress>,
-    portal_address: SharedImmutable<EthAddress>
+    +token: PublicMutable<AztecAddress>,
+    +portal_address: SharedImmutable<EthAddress>
 }
 class Context {
-    <<interface>>
+    <<module>>
     +consume_l1_to_l2_message()
-    message_portal(recipient: EthAddress, content: Field)
+    +message_portal(recipient: EthAddress, content: Field)
 }
 
 

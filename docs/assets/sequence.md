@@ -1,4 +1,9 @@
 # Sequence Diagram
+
+## Logical Execution Flow
+This flow demonstrates the full cycle of cross-chain communication, including the deposit from L1 to L2, operations on L2, and the withdrawal back to L1, showcasing how messages and tokens move between layers through the Portal and Token Bridge system. For this demonstration, the user simply deposits 10 USDC to L2 and then withdraws the same amount back to L1.
+> [!NOTE]
+> The L2 inbox only exists conceptually and its functionality is handled by the kernel and the rollup circuits.
 ``` mermaid
 sequenceDiagram
     autonumber
@@ -13,66 +18,59 @@ sequenceDiagram
     participant Rollup Contract
     participant Outbox (L2)
     participant Inbox (L2)
-    participant Portal (L2 sister contract)
+    participant Token Bridge (L2)
     end
     User->>User: Connects wallet
     User->>User: Inputs 10 USDC and clicks transfer
     User->>Portal: Deposits 10 USDC to the portal
     Portal->>Inbox (L1): Send 'mint' msg to L2 (aztec)
     Inbox (L1)->>Inbox (L1): Populate msg values
-    Note right of Inbox (L1): Think of inbox/outbox as trees
     Inbox (L1)->>Inbox (L1): Update state (msg inserted into inbox)
-    Note right of Inbox (L1): inbox inserts messages into message tree
-    Portal (L2 sister contract)->>Outbox (L2): Consume msg initiated to read the msg from L1
-    Outbox (L2)->>Outbox (L2): Consumes msg
-    Note left of Outbox (L2): During consumption, it checks for the corresponding message in the message tree
-    Outbox (L2)->>Outbox (L2): Validates msg 
-    Outbox (L2)->>Outbox (L2): Update state (nullify)
-    Portal (L2 sister contract)->>Inbox (L2): Add msg
-    Inbox (L2)->>Inbox (L2): Populate msg values
-    Inbox (L2)->>Inbox (L2): Update state (insert)
-    Rollup Contract->>Inbox (L2): Consume msg
-    Inbox (L2)->>Inbox (L2): Update state (delete)
-    Rollup Contract->>Outbox (L2): Insert msg
-    Outbox (L2)->>Outbox (L2): Update state (insert)
-    Rollup Contract->>Validating Light Node (L1): Block (Proof + Data)
-    Validating Light Node (L1)->>Validating Light Node (L1): Verify proof
-    Validating Light Node (L1)->>Validating Light Node (L1): Update state
-    Validating Light Node (L1)->>Inbox (L1): Consume l1Tol2 msgs from L1
-    Inbox (L1)->>Inbox (L1): Update state (next tree)
-    Validating Light Node (L1)->>Outbox (L1): Insert messages from L2
-    Outbox (L1)->>Outbox (L1): Update state (insert root)
-    Portal->>Outbox (L1): Consume msg
-    Outbox (L1)->>Outbox (L1): Validate msg
-    Outbox (L1)->>Outbox (L1): Update state (nullify)
+    loop block in chain
+        Token Bridge (L2)->>Outbox (L2): Consume msg initiated to read the msg from L1
+        Outbox (L2)->>Outbox (L2): Consumes and validates msg
+        Outbox (L2)->>Outbox (L2): Update state (nullify)
+        Token Bridge (L2)->>Token Bridge (L2): Mint 10 USDC on L2
+        User->>Token Bridge (L2): Request withdrawal of 10 USDC
+        Token Bridge (L2)->>Token Bridge (L2): Burn 10 USDC on L2
+        Token Bridge (L2)->>Inbox (L2): Add withdrawal msg
+        Inbox (L2)->>Inbox (L2): Populate msg values and update state
+        Rollup Contract->>Inbox (L2): Consume msg
+        Rollup Contract->>Outbox (L2): Insert withdrawal msg
+        Rollup Contract->>Validating Light Node (L1): Block (Proof + Data)
+        Validating Light Node (L1)->>Validating Light Node (L1): Verify proof and update state
+        Validating Light Node (L1)->>Outbox (L1): Insert withdrawal message from L2
+        Outbox (L1)->>Outbox (L1): Update state (insert root)
+    end
+    User->>Portal: Request withdrawal of 10 USDC
+    Portal->>Outbox (L1): Consume withdrawal msg
+    Outbox (L1)->>Outbox (L1): Validate msg and update state (nullify)
+    Portal->>User: Transfer 10 USDC back to user
 
 
 ```
-
-1. User initiates transaction
-2. Clicks transfer
-3. The tokens are deposited to the Portal. This holds the tokens in the Portal 
-4. Portal contract (L1) wants to send a message to L2. In our scenario, we want to mint tokens on Aztec. To set this up look at points 5,6.
-5. The L1 inbox populates the message with information of the sender. The <kbd>sendL2Message()</kbd>  is used to send the message.
-6. The L1 inbox contract inserts the message into its tree
-7. On the L2, as part of a L2 block, a transaction consumes a message from the L2 outbox
-8. Consumes the L1 -> L2 message and emits the nullifier. 
-9. The L2 outbox ensures that the message is included, and that the caller is the recipient and knows the secret to spend. (This is done by the application circuit)
-10. The nullifier of the message is emitted to privately spend the message (This is done by the application circuit)
-11. The L2 contract sends a message to L1 (specifying a recipient)
-12. The L2 inbox populates the message with sender information
-13. The L2 inbox inserts the message into its storage
-14. The rollup circuit starts consuming the messages from the inbox
-15. The L2 inbox deletes the messages from its storage
-16. The L2 block includes messages from the L1 inbox that are to be inserted into the L2 outbox
-17. The L2 outbox state is updated to include the messages
-18. The L2 block is submitted to L1
-19. The state transitioner receives the block and verifies the proof + validates constraints on block
-20. The state transitioner updates it's state to the ending state of the block
-21. The state transitioner consumes the messages from the L1 inbox that was specified in the block. They have been inserted into the L2 outbox, ensuring atomicity.
-22. The L1 inbox updates it local state by marking the message tree messages as consumed
-23. The state transitioner inserts the messages tree root into the L1 Outbox. They have been consumed from the L2 inbox, ensuring atomicity.
-24. The L1 outbox updates it local state by inserting the message root and height
-25. The portal later consumes a message from the L1 outbox
-26. The L1 outbox validates that the message exists and that the caller is indeed the recipient
-27. The L1 outbox updates it local state by nullifying the message
+The sequence diagram above is numbered to show the logical flow of the cross-chain communication process. The steps are as follows:
+1. User connects their wallet to the system.
+2. User inputs 10 USDC and initiates a transfer to L2.
+3. User deposits 10 USDC to the Portal contract on L1, which holds the tokens.
+4. Portal contract on L1 sends a 'mint' message to L2 (Aztec) via the L1 Inbox.
+5. L1 Inbox populates the message with sender information using sendL2Message().
+6. L1 Inbox updates its state by inserting the message into its tree.
+7. Token Bridge on L2 initiates consumption of the message from L2 Outbox.
+8. L2 Outbox consumes the message and validates it.
+9. L2 Outbox updates its state by nullifying the consumed message.
+10. Token Bridge mints 10 USDC on L2, corresponding to the deposited amount.
+11. User requests withdrawal of 10 USDC on L2.
+12. Token Bridge burns 10 USDC on L2 to initiate the withdrawal.
+13. Token Bridge adds a withdrawal message to the L2 Inbox.
+14. L2 Inbox populates the message with sender information and updates its state.
+15. Rollup Contract consumes the message from L2 Inbox.
+16. Rollup Contract inserts the withdrawal message into L2 Outbox.
+17. Rollup Contract submits the L2 block (including Proof + Data) to the Validating Light Node on L1.
+18. Validating Light Node verifies the proof and updates its state.
+19. Validating Light Node inserts the withdrawal message from L2 into L1 Outbox.
+20. L1 Outbox updates its state by inserting the message root.
+21. User requests withdrawal of 10 USDC from the Portal on L1.
+22. Portal consumes the withdrawal message from L1 Outbox.
+23. L1 Outbox validates the message and updates its state by nullifying it.
+24. Portal transfers 10 USDC back to the user, completing the cross-chain withdrawal.
