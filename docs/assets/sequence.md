@@ -42,7 +42,7 @@ sequenceDiagram
     Rollup Contract->>Validating Light Node: Submit L2 block (Proof + Data)
     Validating Light Node->>Validating Light Node: Verify proof and update state
     Validating Light Node->>L1 Outbox: Insert withdrawal message from L2
-    User->>L1 TokenPortal: Request withdrawal on L1
+    User->>L1 TokenPortal: Withdrawal finalization on L1
     L1 TokenPortal->>L1 Outbox: Verify withdrawal message
     L1 Outbox->>L1 Outbox: Consume withdrawal message
     L1 TokenPortal->>L1 Token: Transfer tokens to User
@@ -69,7 +69,9 @@ The sequence diagram above is numbered to show the logical flow of the cross-cha
 > [!NOTE]
 > Auth witness allows a user to grant permission for a specific action to be performed on their behalf.
 * This creates an authorization for the L2 TokenBridge to call the burn function on the L2 Token contract, specifying the owner's address, the amount to burn, and a nonce for uniqueness.
-10. User initiates withdrawal from L2: The user starts the process to move tokens back to L1 by interacting with the L2 TokenBridge. [See how its used in our tests](https://github.com/0xbow-io/asp-aztec-bridge/blob/a8f5f4151ecbf323c7e13df0f5f6caae9399a0c7/packages/src/test/cross_chain_messaging.test.ts#L146)
+10. User initiates withdrawal from L2: The user starts the process to move tokens back to L1 by interacting with the L2 TokenBridge. 
+* [See how its used in our tests](https://github.com/0xbow-io/asp-aztec-bridge/blob/a8f5f4151ecbf323c7e13df0f5f6caae9399a0c7/packages/src/test/cross_chain_messaging.test.ts#L146)
+* [The function being used](https://github.com/0xbow-io/asp-aztec-bridge/blob/a8f5f4151ecbf323c7e13df0f5f6caae9399a0c7/packages/aztec-contracts/token_bridge/src/main.nr#L104)
 11. L2 TokenBridge burns tokens: The specified amount of tokens is destroyed on L2. [Relevant code here](https://github.com/0xbow-io/asp-aztec-bridge/blob/a8f5f4151ecbf323c7e13df0f5f6caae9399a0c7/packages/aztec-contracts/token_bridge/src/main.nr#L119)
 12. L2 TokenBridge adds withdrawal message: A message about the withdrawal is added to the L2 Inbox. [Relevant code here](https://github.com/0xbow-io/asp-aztec-bridge/blob/a8f5f4151ecbf323c7e13df0f5f6caae9399a0c7/packages/aztec-contracts/token_bridge/src/main.nr#L113)
 13. Rollup Contract consumes message: The L2 Rollup Contract processes the withdrawal message.
