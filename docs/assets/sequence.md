@@ -3,8 +3,8 @@
 ## Logical Execution Flow
 The sequence diagram illustrates how the ASP and Privacy Pool contracts interact with Aztec ecosystem in ensuring compliance. Below are 2 sequence diagrams that show the logical flow of the deposit and withdrawal processes.
 
-> [Note!]
-> The sequence diagrams do not show the full flow of the deposit and withdrawal processes (i.e L1 -> L2). They are simplified to show the interaction between the ASP , Privacy Pools and the Aztec ecosystem.
+> [!NOTE]
+> The sequence diagrams do not show the full flow of the deposit and withdrawal processes for the bridge. They are simplified to show the core interactions between the ASP, Privacy Pools and the Aztec ecosystem and how compliance is ensured.
 
 ### Deposit Flow
 ``` mermaid
@@ -51,7 +51,7 @@ The sequence diagram above is numbered to show the logical flow of the deposit p
 7. The Privacy Pool Token Portal requests a compliance proof for the set of returned records.
 8. The ASP ZKP Generator computes the proof to confirm compliance.
 9. If the proof is non-compliant, the Privacy Pool Token Portal reverts the deposit request.
-10. If the proof is compliant, the User generates claim secrets
+10. If the proof is compliant, continue with the deposit flow. The User generates claim secrets
 11. Users Tokens are then deposited to the Privacy Pool Token Portal.
 12. The Privacy Pool Token Portal sends a 'mint' message to the L2 TokenBridge.
 13. The L1 Inbox inserts the message into the message tree.
@@ -97,5 +97,5 @@ The sequence diagram above is numbered to show the logical flow of the withdrawa
 7. The Privacy Pool Token Portal requests a compliance proof for the set of returned records.
 8. The ASP ZKP Generator computes the proof to confirm compliance.
 9. If the proof is non-compliant, the Privacy Pool Token Portal cancels the withdrawal request.
-10. If the proof is compliant, the User creates an auth witness for token burn.
+10. If the proof is compliant, continue with the withdrawal flow. The User creates an auth witness for token burn.
 11. The withdrawal initiation process is then continued for the user to receive the tokens on L1.
