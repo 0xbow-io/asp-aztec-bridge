@@ -38,9 +38,21 @@ sequenceDiagram
     end
 
 ```
-The sequence diagram above is numbered to show the logical flow of deposit process:
+The sequence diagram above is numbered to show the logical flow of the deposit process:
 1. User initiates a deposit request to the L1 PP Token Portal.
-2. ...
+2. The ASP Watcher detects the deposit event via a state change.
+3. The ASP Record Generator creates a cryptographic record of the state transition. The Record is then classified and categorized. After categorization, a 256-bit category bitmap is generated.
+4. The category bitmap and the associated record are stored on-chain in the Public Registry contract.
+5. The L1 PP Token Portal queries the Public Registry for the record hashes.
+6. The ASP returns a subset of the record hashes.
+7. The L1 PP Token Portal requests a compliance proof for the set of returned records.
+8. The ASP ZKP Generator computes the proof to confirm compliance.
+9. If the proof is non-compliant, the L1 PP Token Portal reverts the deposit request.
+10. If the proof is compliant, the User generates claim secrets
+11. Users Tokens are then deposited to the L1 PP Token Portal.
+12. The L1 PP Token Portal sends a 'mint' message to the L2 TokenBridge.
+13. The L1 Inbox inserts the message into the message tree.
+
 ### Withdrawal Flow
 
 ``` mermaid
@@ -71,3 +83,16 @@ sequenceDiagram
         Note over L2 TokenBridge: Rest of the flow for the withdrawal
     end
 ```
+
+The sequence diagram above is numbered to show the logical flow of the withdrawal process:
+1. User initiates a withdrawal request from L2 to L1.
+2. The ASP Watcher detects the withdrawal event via a state change.
+3. The ASP Record Generator creates a cryptographic record of the state transition. The Record is then classified and categorized. After categorization, a 256-bit category bitmap is generated.
+4. The category bitmap and the associated record are stored on-chain in the Public Registry contract.
+5. The L1 PP Token Portal queries the Public Registry for the record hashes.
+6. The ASP returns a subset of the record hashes.
+7. The L1 PP Token Portal requests a compliance proof for the set of returned records.
+8. The ASP ZKP Generator computes the proof to confirm compliance.
+9. If the proof is non-compliant, the L1 PP Token Portal cancels the withdrawal request.
+10. If the proof is compliant, the User creates an auth witness for token burn.
+11. The withdrawal initiation process is then continued for the user to receive the tokens on L1.
