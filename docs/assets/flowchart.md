@@ -2,7 +2,7 @@
 flowchart TD
     start[Start] --> User
     User([User]) --> |interacts with| UI[User Interface]
-    UI --> |Deposits/Withdraws| PP[Privacy Pool Token Portal]
+    UI --> |Deposits/Withdraws| PP[Privacy Pool Portal]
     PP --> |Event Emission| W[Watcher]
     
     subgraph ASP [Association Set Provider]
@@ -29,7 +29,7 @@ flowchart TD
     CP --> |False| RTX[Reject Deposit/Withdraw]
     ATX --> END[End]
     RTX --> D{Dispute?}
-    D --> |True| R[Initiate Dispute Reslution Process]
+    D --> |True| R[Initiate Dispute Resolution Process]
     R --> END
     D --> |False| END
     
