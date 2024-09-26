@@ -2,12 +2,12 @@
 
 ## L1 Contracts
 Class diagram for the L1 contracts. The contracts are:
-* TokenPortal
+* PrivacyPoolTokenPortal
 * PortalERC20
 
 ```mermaid
 classDiagram
-class TokenPortal{
+class PrivacyPoolTokenPortal{
     <<contract>>
     +registry: IRegistry
     +underlying: IERC20
@@ -150,19 +150,85 @@ class PortalERC20 {
     +constructor()
 }
 
-%%TokenPortal Interactions
-TokenPortal --|> IRegistry: uses
-TokenPortal ..> L2ToL1Msg: uses
-TokenPortal --|> IERC20: uses
-TokenPortal ..> SafeERC20: uses
-TokenPortal ..> Hash: uses
+class ASPadapter {
+    <<interface>>
+    +constructor()
+    +verify()
+}
+
+class AssociationSetProvider {
+    <<contract>>
+    +constructor()
+    +applyPredicate()
+    ~_applyPredicate()
+}
+
+class RecordCategoryRegistry {
+    <<contract>>
+    +constructor()
+    +grantRegistryAdminRole()
+    +revokeRegistryAdminRole()
+    +setCategoryForRecord()
+    +getCategoryBitmap()
+    +getRecordHashAndCategoryAt()
+    +tryGetCategoryBitmap()
+    +getRecordHashesAndCategories()
+    +getLatestForScope()
+    ~_applyPredicate()
+}
+
+class PrivacyPool {
+    <<contract>>
+    +constructor()
+    +process()
+    +computePublicVal()
+    +computeScope()
+    +root()
+    +size()
+    +depth()
+    ~_doCommit()
+    ~_doRelease()
+    ~_updateState()
+}
+
+class IGroth16Verifier {
+    <<interface>>
+    +verifyProof()
+}
+
+class IPrivacyPool {
+    <<interface>>
+    +computePublicVal(Request calldata _r)
+    +computeScope(Request calldata _r)
+    +process(
+        Request calldata _r,
+        Supplement calldata _s,
+        uint256[2] calldata _pA,
+        uint256[2][2] calldata _pB,
+        uint256[2] calldata _pC,
+        uint256[9] calldata _pubSignals
+    )
+    +root()
+    +size()
+    +depth()
+}
+
+class Verifier 
+
+%%PrivacyPoolPrivacyPoolTokenPortal Interactions
+PrivacyPoolTokenPortal --|> IRegistry: uses
+PrivacyPoolTokenPortal ..> L2ToL1Msg: uses
+PrivacyPoolTokenPortal --|> IERC20: uses
+PrivacyPoolTokenPortal ..> SafeERC20: uses
+PrivacyPoolTokenPortal ..> Hash: uses
+PrivacyPoolTokenPortal --|> ASPadapter: uses
 %%IRegistry Interactions
 IRegistry ..> IRollup: stores address for
 IRegistry ..> IInbox: stores address for
 IRegistry ..> IOutbox: stores address for
 IRegistry ..> RegistrySnapshot
 IRegistry ..> DataStructures: uses
-%%IIInbox Interactions
+%%IInbox Interactions
 IInbox ..> DataStructures
 IInbox ..> L2Actor
 %%IOutbox Interactions
@@ -192,6 +258,10 @@ Hash ..> L2ToL1Msg
 PortalERC20 --|> ERC20: is
 %%ERC20 Interactions
 ERC20 ..> IERC20
+%%ASPadapter Interactions
+ASPadapter --|> AssociationSetProvider: uses
+%%AssociationSetProvider Interactions
+AssociationSetProvider --|> RecordCategoryRegistry: is
 
 ```
 
