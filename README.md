@@ -20,11 +20,11 @@ A portal in the Aztec ecosystem is a crucial interface that facilitates communic
 ```
 .
 ├── docs  // Contains the documentation for the project
-└──  packages  // Contains Aztec L2 contracts and the TS application
+└──  packages 
       ├── aztec-contracts  // Contains the L2 contracts
       ├── src  // Contains the TS application
       ├── l1-contracts  // Contains the L1 contracts
-      └──  circuits  // Contains the Noir circuits
+      └── circuits  // Contains the Noir circuits
 
 ```
 
@@ -91,7 +91,7 @@ aztec codegen target -o ../../src/test/fixtures
 #### L1 contracts
 
 ```bash
-cd l1-contracts
+cd packages/l1-contracts
 npx hardhat compile
 ```
 

@@ -56,3 +56,20 @@ Below are the detailed descriptions of the risk categories evaluated by the circ
 | Darknet Market | Darknet markets are hidden online black markets accessed via anonymizing software. They sell illicit goods using cryptocurrencies, with escrow and feedback systems for trust. Increased law enforcement has prompted tighter security measures.|
 | Illicit Actor Org | Illicit actors are individuals or groups involved in illegal activities, either directly or indirectly. They're connected to high-risk entities like darknet markets, fraud shops, extremist financing, and hacking operations. |
 | Sanctioned Entity | Sanctioned entities are individuals, organizations, or governments subject to financial restrictions by governments or international bodies. These restrictions aim to curb illicit activities, human rights abuses, or threats to national security. Sanctions can include asset freezes, travel bans, and trade embargoes. |
+
+## Setup
+1. Install Noir via Nargo. `nargo` is a tool for working with Noir programs on the CLI, providing you with the ability to start new projects, compile, execute and test Noir programs from the terminal.
+Open a terminal on your machine, and write:
+```bash
+curl -L https://raw.githubusercontent.com/noir-lang/noirup/main/install | bash
+```
+2. Install Noir version v0.33.0
+```bash
+noirup --0.33.0
+```
+3. navigate to the `packages/circuits/categorizer` directory and run the following command to run the tests:
+> [!NOTE]
+> Do not run the tests via `nargo test`, make sure you include the test function name i.e. `nargo test test_indirect_ofac`, otherwise all tests will run and it will take a long time.
+```bash
+nargo test name_of_the_test
+```
