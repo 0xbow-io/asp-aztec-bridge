@@ -19,8 +19,12 @@ A portal in the Aztec ecosystem is a crucial interface that facilitates communic
 ### Directory Structure
 ```
 .
-├── l1-contracts  // Contains L1 contracts
-├── packages  // Contains Aztec L2 contracts and the TS application
+├── docs  // Contains the documentation for the project
+└──  packages  // Contains Aztec L2 contracts and the TS application
+      ├── aztec-contracts  // Contains the L2 contracts
+      ├── src  // Contains the TS application
+      ├── l1-contracts  // Contains the L1 contracts
+      └──  circuits  // Contains the Noir circuits
 
 ```
 
