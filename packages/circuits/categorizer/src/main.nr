@@ -1,6 +1,8 @@
 use dep::json_parser::JSON2kb::JSON;
+use crate::categories::Bitmap;
 use crate::categories::Chainalysis::{TERRORIST_FINANCING, SCAM, FRAUD_SHOP, ICO, MIXING, SEIZED_FUNDS, GAMBLING, SPECIAL_MEASURES, STOLEN_FUNDS, RANSOMWARE, MALWARE, SANCTIONED_JURISDICTION, NO_KYC_EXCHANGE, EXCHANGE, CHILD_ABUSE_MATERIAL, DARKNET_MARKET, ILLICIT_ACTOR_ORG, SANCTIONED_ENTITY};
 use crate::global_values::{MAX_JSON_LEN, MAX_TREF_LEN, MAX_TXHASH_LEN};
+
 mod parse;
 mod categories;
 mod verifiers;
@@ -44,6 +46,7 @@ fn main(json_string : str<MAX_JSON_LEN>, transferReference : pub str<MAX_TREF_LE
 **/
 fn evaluate(json: parse::ValidatedJSON) -> Field {
 
+    //categoryId should return a value. If it is empty, the JSON is invalid. An ID of 20 should be returned if it is "None".
     assert(json.categoryId.len() > 0, "categoryId is empty");
 
     let mut bitmap: Field = 0;
@@ -70,7 +73,7 @@ fn evaluate(json: parse::ValidatedJSON) -> Field {
 * @param bitmap_value: &mut Field - a mutable reference to a Field that will be updated based on the category checks
 **/
 fn is_terrorism(json: parse::ValidatedJSON, bitmap_value: &mut Field) {
-    let value: Field = categories::TERRORISM;
+    let value: Field = Bitmap::TERRORISM;
     
     let conditions = (json.categoryId == BoundedVec::from_array(TERRORIST_FINANCING.as_bytes())) |
                      (json.categoryId == BoundedVec::from_array(ILLICIT_ACTOR_ORG.as_bytes()));
@@ -87,7 +90,7 @@ fn is_terrorism(json: parse::ValidatedJSON, bitmap_value: &mut Field) {
 * @param bitmap_value: &mut Field - a mutable reference to a Field that will be updated based on the category checks
 **/
 fn is_scam(json: parse::ValidatedJSON, bitmap_value: &mut Field) {
-    let value: Field = categories::SCAM;
+    let value: Field = Bitmap::SCAM;
     
     //Noir does not support || or && so we need to use bitwise operators
     let conditions = (json.categoryId == BoundedVec::from_array(SCAM.as_bytes())) |
@@ -107,7 +110,7 @@ fn is_scam(json: parse::ValidatedJSON, bitmap_value: &mut Field) {
 * @param bitmap_value: &mut Field - a mutable reference to a Field that will be updated based on the category checks
 **/
 fn is_money_laundering(json: parse::ValidatedJSON, bitmap_value: &mut Field) {
-    let value: Field = categories::MONEY_LAUNDERING;
+    let value: Field = Bitmap::MONEY_LAUNDERING;
 
     let conditions = (json.categoryId == BoundedVec::from_array(MIXING.as_bytes())) |
                      (json.categoryId == BoundedVec::from_array(SEIZED_FUNDS.as_bytes())) |
@@ -128,7 +131,7 @@ fn is_money_laundering(json: parse::ValidatedJSON, bitmap_value: &mut Field) {
 * @param bitmap_value: &mut Field - a mutable reference to a Field that will be updated based on the category checks
 **/
 fn is_exploit(json: parse::ValidatedJSON, bitmap_value: &mut Field) {
-    let value: Field = categories::EXPLOIT;
+    let value: Field = Bitmap::EXPLOIT;
 
     let conditions = (json.categoryId == BoundedVec::from_array(STOLEN_FUNDS.as_bytes())) |
                      (json.categoryId == BoundedVec::from_array(RANSOMWARE.as_bytes())) |
@@ -146,7 +149,7 @@ fn is_exploit(json: parse::ValidatedJSON, bitmap_value: &mut Field) {
 * @param bitmap_value: &mut Field - a mutable reference to a Field that will be updated based on the category checks
 **/
 fn is_indirect_ofac(json: parse::ValidatedJSON, bitmap_value: &mut Field) {
-    let value: Field = categories::INDIRECT_OFAC;
+    let value: Field = Bitmap::INDIRECT_OFAC;
 
     let conditions = ((json.categoryId == BoundedVec::from_array(SANCTIONED_JURISDICTION.as_bytes())) |
                      (json.categoryId == BoundedVec::from_array(SANCTIONED_ENTITY.as_bytes()))) &
@@ -164,7 +167,7 @@ fn is_indirect_ofac(json: parse::ValidatedJSON, bitmap_value: &mut Field) {
 * @param bitmap_value: &mut Field - a mutable reference to a Field that will be updated based on the category checks
 **/
 fn is_direct_ofac(json: parse::ValidatedJSON, bitmap_value: &mut Field) {
-    let value: Field = categories::DIRECT_OFAC;
+    let value: Field = Bitmap::DIRECT_OFAC;
 
     let conditions = ((json.categoryId == BoundedVec::from_array(SANCTIONED_JURISDICTION.as_bytes())) |
                      (json.categoryId == BoundedVec::from_array(SANCTIONED_ENTITY.as_bytes()))) &
@@ -182,7 +185,7 @@ fn is_direct_ofac(json: parse::ValidatedJSON, bitmap_value: &mut Field) {
 * @param bitmap_value: &mut Field - a mutable reference to a Field that will be updated based on the category checks
 **/
 fn is_indirect_kyc(json: parse::ValidatedJSON, bitmap_value: &mut Field) {
-    let value: Field = categories::INDIRECT_KYC;
+    let value: Field = Bitmap::INDIRECT_KYC;
 
     let conditions = (json.categoryId == BoundedVec::from_array(NO_KYC_EXCHANGE.as_bytes())) &
                      (json.exposureType == BoundedVec::from_array("INDIRECT".as_bytes()));
@@ -199,7 +202,7 @@ fn is_indirect_kyc(json: parse::ValidatedJSON, bitmap_value: &mut Field) {
 * @param bitmap_value: &mut Field - a mutable reference to a Field that will be updated based on the category checks
 **/
 fn is_direct_kyc(json: parse::ValidatedJSON, bitmap_value: &mut Field) {
-    let value: Field = categories::DIRECT_KYC;
+    let value: Field = Bitmap::DIRECT_KYC;
 
     let conditions = (json.categoryId == BoundedVec::from_array(NO_KYC_EXCHANGE.as_bytes())) &
                      (json.exposureType == BoundedVec::from_array("DIRECT".as_bytes()));
@@ -215,7 +218,7 @@ fn is_direct_kyc(json: parse::ValidatedJSON, bitmap_value: &mut Field) {
 * @param bitmap_value: &mut Field - a mutable reference to a Field that will be updated based on the category checks
 **/
 fn is_cex(json: parse::ValidatedJSON, bitmap_value: &mut Field) {
-    let value: Field = categories::CEX;
+    let value: Field = Bitmap::CEX;
 
     if json.categoryId == BoundedVec::from_array(EXCHANGE.as_bytes()) {
         *bitmap_value += value;
@@ -235,7 +238,7 @@ fn test_terrorism() {
 
     for i in 0..1 {
         let result = main(json_string_list[i], public_input_transRef, public_input_txHash);
-        assert(result == categories::TERRORISM, "Terrorism category not detected");
+        assert(result == Bitmap::TERRORISM, "Terrorism category not detected");
     }
 }
 
@@ -257,7 +260,7 @@ fn test_scam() {
 
     for i in 0..3 {
         let result = main(json_string_list[i], public_input_transRef, public_input_txHash);
-        assert(result == categories::SCAM, "Scam category not detected");
+        assert(result == Bitmap::SCAM, "Scam category not detected");
     }
 }
 
@@ -283,7 +286,7 @@ fn test_money_laundering() {
 
     for i in 0..5 {
         let result = main(json_string_list[i], public_input_transRef, public_input_txHash);
-        assert(result == categories::MONEY_LAUNDERING, "Money laundering category not detected");
+        assert(result == Bitmap::MONEY_LAUNDERING, "Money laundering category not detected");
     }
 }
 
@@ -303,7 +306,7 @@ fn test_exploit() {
 
     for i in 0..2 {
         let result = main(json_string_list[i], public_input_transRef, public_input_txHash);
-        assert(result == categories::EXPLOIT, "Exploit category not detected");
+        assert(result == Bitmap::EXPLOIT, "Exploit category not detected");
     }
     
 }
@@ -322,7 +325,7 @@ fn test_direct_ofac() {
 
     for i in 0..1 {
         let result = main(json_string_list[i], public_input_transRef, public_input_txHash);
-        assert(result == categories::DIRECT_OFAC, "Direct OFAC category not detected");
+        assert(result == Bitmap::DIRECT_OFAC, "Direct OFAC category not detected");
     }
 }
 
@@ -340,7 +343,7 @@ fn test_indirect_ofac() {
 
     for i in 0..1 {
         let result = main(json_string_list[i], public_input_transRef, public_input_txHash);
-        assert(result == categories::INDIRECT_OFAC, "Indirect OFAC category not detected");
+        assert(result == Bitmap::INDIRECT_OFAC, "Indirect OFAC category not detected");
     }
 }
 
@@ -350,7 +353,7 @@ fn test_direct_kyc() {
     let public_input_transRef = "b765440e872ab6e2521694d10465415bda4adf8ed7fc2fdafb6d39bd17c5fddf:1                                  ";
     let public_input_txHash = "b765440e872ab6e2521694d10465415bda4adf8ed7fc2fdafb6d39bd17c5fddf";
     let result = main(json_string, public_input_transRef, public_input_txHash);
-    assert(result == categories::DIRECT_KYC, "Direct KYC category not detected");
+    assert(result == Bitmap::DIRECT_KYC, "Direct KYC category not detected");
 }
 
 #[test]
@@ -359,7 +362,7 @@ fn test_indirect_kyc() {
     let public_input_transRef = "b765440e872ab6e2521694d10465415bda4adf8ed7fc2fdafb6d39bd17c5fddf:1                                  ";
     let public_input_txHash = "b765440e872ab6e2521694d10465415bda4adf8ed7fc2fdafb6d39bd17c5fddf";
     let result = main(json_string, public_input_transRef, public_input_txHash);
-    assert(result == categories::INDIRECT_KYC, "Indirect KYC category not detected");
+    assert(result == Bitmap::INDIRECT_KYC, "Indirect KYC category not detected");
 }
 
 #[test]
@@ -368,7 +371,7 @@ fn test_cex() {
     let public_input_transRef = "b765440e872ab6e2521694d10465415bda4adf8ed7fc2fdafb6d39bd17c5fddf:1                                  ";
     let public_input_txHash = "b765440e872ab6e2521694d10465415bda4adf8ed7fc2fdafb6d39bd17c5fddf";
     let result = main(json_string, public_input_transRef, public_input_txHash);
-    assert(result == categories::CEX, "CEX category not detected");
+    assert(result == Bitmap::CEX, "CEX category not detected");
 }
 
 #[test]
@@ -378,11 +381,11 @@ fn test_multiple_categories() {
     let public_input_transRef = "b765440e872ab6e2521694d10465415bda4adf8ed7fc2fdafb6d39bd17c5fddf:1                                  ";
     let public_input_txHash = "b765440e872ab6e2521694d10465415bda4adf8ed7fc2fdafb6d39bd17c5fddf";
     let result = main(json_string, public_input_transRef, public_input_txHash);
-    assert(result == (categories::SCAM + categories::TERRORISM), "invalid category");
+    assert(result == (Bitmap::SCAM + Bitmap::TERRORISM), "invalid category");
     
 }
 
-//categoryId field does not have any values, categoryId returns null if its a BEHAVIORAL alert which is wrong
+//categoryId field does not have any values, should return an id of 20 if its "None". Therefore, if its empty, something is wrong.
 #[test(should_fail_with = "categoryId is empty")]
 fn test_empty_categoryId() {
     let json_string = "{\"total\":\"1000\",\"limit\":\"0\",\"offset\":\"0\",\"data\":[{\"alertAmountUsd\":\"132.50\",\"transactionHash\":\"b765440e872ab6e2521694d10465415bda4adf8ed7fc2fdafb6d39bd17c5fddf\",\"exposureType\":\"DIRECT\",\"alertStatus\":\"Flagged\",\"transferReportedAt\":\"2017-01-05T14:23:00.397Z\",\"alertIdentifier\":\"a6a5d0f8-9753-11e9-a517-ebce3e967522\",\"transferReference\":\"b765440e872ab6e2521694d10465415bda4adf8ed7fc2fdafb6d39bd17c5fddf:1\",\"alertStatusCreatedBy\":\"null\",\"valid\":\"true\",\"transferCountWindow\":\"null\",\"ruleAsset\":\"null\",\"direction\":\"SENT\",\"timestamp\":\"2011-06-18T08:22:21Z\",\"period\":\"null\",\"windowSize\":\"null\",\"transferredValuePercentage\":\"100.0\",\"level\":\"HIGH\",\"service\":\"SilkRoadMarketplace\",\"alertStatusCreatedAt\":\"2020-01-14T13:57:58.713226Z\",\"userId\":\"mtgox_ghosts\",\"transferCount\":\"null\",\"createdAt\":\"2019-06-17T17:39:41.550575Z\",\"alertType\":\"TRANSFER\",\"transferOutputAddress\":\"1DP38CC2kf6ewUDaaVd9nBfuAD8SP15g2T\",\"validity\":\"VALID\",\"category\":\"darknetmarket\",\"transactionIndex\":\"1\",\"asset\":\"BTC\",\"rule\":\">$100sentdirectlytodarknetmarket\",\"minThreshold\":\"100\",\"maxThreshold\":\"null\",\"categoryId\":\"\",\"customGroupExternalId\":\"null\"}]}                                                                                       ";
