@@ -93,7 +93,7 @@ noirup --0.33.0
 ```
 3. navigate to the `packages/circuits/categorizer` directory and run the following command to run the tests:
 > [!NOTE]
-> Do not run the tests via `nargo test`, make sure you include the test function name i.e. `nargo test test_indirect_ofac`, otherwise all tests will run and it will take a long time.
+> Do not run the tests via `nargo test` by itself, make sure you include the test function name i.e. `nargo test test_indirect_ofac`, otherwise it will run all tests and the application may potentially freeze.
 ```bash
 nargo test name_of_the_test
 ```
