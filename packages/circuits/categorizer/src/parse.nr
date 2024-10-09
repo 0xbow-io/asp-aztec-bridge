@@ -62,10 +62,10 @@ fn parse_json(json: JSON) -> ValidatedJSON {
     let timestamp: BoundedVec<u8, 20> = data_obj.get_string_unchecked("timestamp".as_bytes());
 
     // "period"
-    let period: BoundedVec<u8, 10> = data_obj.get_string_unchecked("period".as_bytes());
+    let period: BoundedVec<u8, 4> = data_obj.get_string_unchecked("period".as_bytes());
 
     // "windowSize"
-    let windowSize: BoundedVec<u8, 10> = data_obj.get_string_unchecked("windowSize".as_bytes());
+    let windowSize: BoundedVec<u8, 4> = data_obj.get_string_unchecked("windowSize".as_bytes());
     
     // "transferredValuePercentage"
     let transferredValuePercentage: BoundedVec<u8, 5> = data_obj.get_string_unchecked("transferredValuePercentage".as_bytes());
@@ -83,7 +83,7 @@ fn parse_json(json: JSON) -> ValidatedJSON {
     let userId: BoundedVec<u8, 20> = data_obj.get_string_unchecked("userId".as_bytes());
 
     // "transferCount"
-    let transferCount: BoundedVec<u8, 20> = data_obj.get_string_unchecked("transferCount".as_bytes());
+    let transferCount: BoundedVec<u8, 4> = data_obj.get_string_unchecked("transferCount".as_bytes());
 
     // "createdAt"
     let createdAt: BoundedVec<u8, 30> = data_obj.get_string_unchecked("createdAt".as_bytes());
@@ -95,10 +95,7 @@ fn parse_json(json: JSON) -> ValidatedJSON {
     let transferOutputAddress: BoundedVec<u8, 34> = data_obj.get_string_unchecked("transferOutputAddress".as_bytes());
 
     // "validity"
-    let validity: BoundedVec<u8, 10> = data_obj.get_string_unchecked("validity".as_bytes());
-
-    // "category"
-    let category: BoundedVec<u8, 20> = data_obj.get_string_unchecked("category".as_bytes());
+    let validity: BoundedVec<u8, 7> = data_obj.get_string_unchecked("validity".as_bytes());
 
     // "transactionIndex"
     let transactionIndex: BoundedVec<u8, 10> = data_obj.get_string_unchecked("transactionIndex".as_bytes());
@@ -150,7 +147,6 @@ fn parse_json(json: JSON) -> ValidatedJSON {
         alertType: alertType,
         transferOutputAddress: transferOutputAddress,
         validity: validity,
-        category: category,
         transactionIndex: transactionIndex,
         asset: asset,
         rule: rule,
@@ -180,19 +176,18 @@ struct ValidatedJSON {
     ruleAsset: BoundedVec<u8, 10>,
     direction: BoundedVec<u8, 8>,
     timestamp: BoundedVec<u8, 20>,
-    period: BoundedVec<u8, 10>,
-    windowSize: BoundedVec<u8, 10>,
+    period: BoundedVec<u8, 4>,
+    windowSize: BoundedVec<u8, 4>,
     transferredValuePercentage: BoundedVec<u8, 5>,
     level: BoundedVec<u8, 10>,
     service: BoundedVec<u8, 21>,
     alertStatusCreatedAt: BoundedVec<u8, 30>,
     userId: BoundedVec<u8, 20>,
-    transferCount: BoundedVec<u8, 20>,
+    transferCount: BoundedVec<u8, 4>,
     createdAt: BoundedVec<u8, 30>,
     alertType: BoundedVec<u8, 10>,
     transferOutputAddress: BoundedVec<u8, 34>,
-    validity: BoundedVec<u8, 10>,
-    category: BoundedVec<u8, 20>,
+    validity: BoundedVec<u8, 7>,
     transactionIndex: BoundedVec<u8, 10>,
     asset: BoundedVec<u8, 10>,
     rule: BoundedVec<u8, 50>,
@@ -218,7 +213,7 @@ fn test_parse_json_success() {
     let  _ = parse_json(json);
 }
 
-// Below are all the tests for the parse_json function that will fail. Unable to use loops to make this test more concise due to the nature of the JSON object. All 37 keys are tested.
+// Below are all the tests for the parse_json function that will fail. Unable to use loops to make this test more concise due to the nature of the JSON object. All keys are tested.
 
 #[test(should_fail_with = "find_key_in_map, key not found")]
 fn test_parse_json_1() {
@@ -541,7 +536,7 @@ fn test_parse_json_29() {
 
 #[test(should_fail_with = "find_key_in_map, key not found")]
 fn test_parse_json_30() {
-    // the thirtieth key ("category") is invalid
+    // the thirtieth key ("category") is invalid. Note that category is now deprecated, we use categoryId instead.
 
     let json_string = "{\"total\":\"1000\",\"limit\":\"0\",\"offset\":\"0\",\"data\":[{\"alertAmountUsd\":\"132.50\",\"transactionHash\":\"b765440e872ab6e2521694d10465415bda4adf8ed7fc2fdafb6d39bd17c5fddf\",\"exposureType\":\"DIRECT\",\"alertStatus\":\"Flagged\",\"transferReportedAt\":\"2017-01-05T14:23:00.397Z\",\"alertIdentifier\":\"a6a5d0f8-9753-11e9-a517-ebce3e967522\",\"transferReference\":\"b765440e872ab6e2521694d10465415bda4adf8ed7fc2fdafb6d39bd17c5fddf:1\",\"alertStatusCreatedBy\":\"null\",\"valid\":\"true\",\"transferCountWindow\":\"null\",\"ruleAsset\":\"null\",\"direction\":\"SENT\",\"timestamp\":\"2011-06-18T08:22:21Z\",\"period\":\"null\",\"windowSize\":\"null\",\"transferredValuePercentage\":\"100.0\",\"level\":\"HIGH\",\"service\":\"SilkRoadMarketplace\",\"alertStatusCreatedAt\":\"2020-01-14T13:57:58.713226Z\",\"userId\":\"mtgox_ghosts\",\"transferCount\":\"null\",\"createdAt\":\"2019-06-17T17:39:41.550575Z\",\"alertType\":\"TRANSFER\",\"transferOutputAddress\":\"1DP38CC2kf6ewUDaaVd9nBfuAD8SP15g2T\",\"validity\":\"VALID\",\"cavegory\":\"darknetmarket\",\"transactionIndex\":\"1\",\"asset\":\"BTC\",\"rule\":\">$100sentdirectlytodarknetmarket\",\"minThreshold\":\"100\",\"maxThreshold\":\"null\",\"categoryId\":\"2\",\"customGroupExternalId\":\"null\"}]}                                                                                      ";
 

@@ -9,7 +9,7 @@ mod verifiers;
 mod global_values;
 
 /**
-* @note - NOTE: Verify keys step is technically not needed as the parse_json function will 
+* @note - Verify keys step is technically not needed as the parse_json function will 
 * fail an assertion if the expected keys are not found. Saves about 1k Opcodes. However, it may cut down computation time
 * if the supplied JSON has invalid keys.
 **/
@@ -21,7 +21,7 @@ fn main(json_string : str<MAX_JSON_LEN>, transferReference : pub str<MAX_TREF_LE
     // 1. we verify the keys first, we ensure that the expected keys are the same as the json retrieved keys
     
     let result = verifiers::verify_keys(json);
-    assert(result == 36, f"not enough valid keys counted: {result}/36"); 
+    assert(result == 35, f"require a count of 35 valid keys but got: {result}/35"); 
     
     // 2. we then verify the public inputs vs the json retrieved data
 
@@ -62,8 +62,6 @@ fn evaluate(json: parse::ValidatedJSON) -> Field {
     is_cex(json, &mut bitmap);
 
     bitmap
-
-    
 }
 
 /**
@@ -122,7 +120,6 @@ fn is_money_laundering(json: parse::ValidatedJSON, bitmap_value: &mut Field) {
     if conditions {
         *bitmap_value += value;
     }
-
 }
 
 /**

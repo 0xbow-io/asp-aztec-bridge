@@ -134,10 +134,6 @@ fn verify_keys(json: JSON) -> u8 {
     let key_exists = data_obj.key_exists(validity);
     sum += key_exists as u8;
 
-    let category: BoundedVec<u8, 8> = BoundedVec::from_array("category".as_bytes());
-    let key_exists = data_obj.key_exists(category);
-    sum += key_exists as u8;
-
     let transactionIndex: BoundedVec<u8, 16> = BoundedVec::from_array("transactionIndex".as_bytes());
     let key_exists = data_obj.key_exists(transactionIndex);
     sum += key_exists as u8;
@@ -285,14 +281,14 @@ fn test_verify_keys_0_valid() {
 
 #[test]
 fn test_verify_keys_all_valid() {
-    // All keys in this json_string are valid. The sum should be 36.
+    // All keys in this json_string are valid. The sum should be 35.
     let json_string = "{\"total\":\"1000\",\"limit\":\"0\",\"offset\":\"0\",\"data\":[{\"alertAmountUsd\":\"132.50\",\"transactionHash\":\"b765440e872ab6e2521694d10465415bda4adf8ed7fc2fdafb6d39bd17c5fddf\",\"exposureType\":\"DIRECT\",\"alertStatus\":\"Flagged\",\"transferReportedAt\":\"2017-01-05T14:23:00.397Z\",\"alertIdentifier\":\"a6a5d0f8-9753-11e9-a517-ebce3e967522\",\"transferReference\":\"b765440e872ab6e2521694d10465415bda4adf8ed7fc2fdafb6d39bd17c5fddf:1\",\"alertStatusCreatedBy\":\"null\",\"valid\":\"true\",\"transferCountWindow\":\"null\",\"ruleAsset\":\"null\",\"direction\":\"SENT\",\"timestamp\":\"2011-06-18T08:22:21Z\",\"period\":\"null\",\"windowSize\":\"null\",\"transferredValuePercentage\":\"100.0\",\"level\":\"HIGH\",\"service\":\"SilkRoadMarketplace\",\"alertStatusCreatedAt\":\"2020-01-14T13:57:58.713226Z\",\"userId\":\"mtgox_ghosts\",\"transferCount\":\"null\",\"createdAt\":\"2019-06-17T17:39:41.550575Z\",\"alertType\":\"TRANSFER\",\"transferOutputAddress\":\"1DP38CC2kf6ewUDaaVd9nBfuAD8SP15g2T\",\"validity\":\"VALID\",\"category\":\"darknetmarket\",\"transactionIndex\":\"1\",\"asset\":\"BTC\",\"rule\":\">$100sentdirectlytodarknetmarket\",\"minThreshold\":\"100\",\"maxThreshold\":\"null\",\"categoryId\":\"23\",\"customGroupExternalId\":\"null\"}]}                                                                                     ";
 
     let json = JSON::parse_json(json_string.as_bytes());
 
     let result = verify_keys(json);
 
-    assert(result == 36);
+    assert(result == 35);
 }
 
 /**
