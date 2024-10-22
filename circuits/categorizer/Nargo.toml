@@ -1,8 +1,0 @@
-[package]
-name = "categorizer"
-type = "bin"
-authors = [""]
-compiler_version = ">=0.33.0"
-
-[dependencies]
-json_parser = {tag = "v0.1.0", git = "https://github.com/noir-lang/noir_json_parser"}

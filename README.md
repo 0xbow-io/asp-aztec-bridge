@@ -11,16 +11,21 @@ This project is the basis of the ASP Aztec Bridge. The program demonstrates how 
 ## What is a portal?
 A portal in the Aztec ecosystem is a crucial interface that facilitates communication between Layer 1 (L1) and a specific contract on Aztec's Layer 2 (L2). It serves as a dedicated bridge, enabling bidirectional message passing between these two layers.
 
-## Components
-* A **Token Portal** is a solidity contract on L1
-* A **Token Bridge** is a aztec-nr contract on L2
-* A **TypeScript** application that can call the methods on the contracts and communicate with the sandbox.
+## Main Components
+* **Token Portal** is a solidity contract on L1
+* **Token Bridge** is a aztec-nr contract on L2
+* **TypeScript** application that can call the methods on the contracts and communicate with the sandbox
+* **Noir circuits** are zero knowledge circuits that can be used to prove certain properties about the transactions
 
 ### Directory Structure
 ```
 .
-├── l1-contracts  // Contains L1 contracts
-├── packages  // Contains Aztec L2 contracts and the TS application
+├── docs  // Contains the documentation for the project
+└──  packages 
+      ├── aztec-contracts  // Contains the Aztec L2 contracts
+      ├── src  // Contains the TS application
+      ├── l1-contracts  // Contains the Ethereum L1 contracts
+      └── circuits  // Contains the Noir circuits
 
 ```
 
@@ -87,7 +92,7 @@ aztec codegen target -o ../../src/test/fixtures
 #### L1 contracts
 
 ```bash
-cd l1-contracts
+cd packages/l1-contracts
 npx hardhat compile
 ```
 
